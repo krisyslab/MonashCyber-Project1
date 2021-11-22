@@ -6,13 +6,13 @@ This document contains the following details:
 - Access Policies
 - Beats in Use
 - Machines Being Monitored
-- How to Use the Ansible Build
+- Usage instructions
 
 
 ### Description of the Topology
 This repository includes code defining the infrastructure below. 
 
-![ELK Stack Deployment.png](https://github.com/zenithus/ELK-Stack-Project/blob/2531628f32c14c27ca5c99a5cd78aedd8b21b1ae/Diagrams/ELK%20Stack%20Deployment.PNG)
+![ELK Stack Deployment.png](https://github.com/zenithus/ELK-Stack-Project/blob/ac09b5bc84c28798928983c9016a5063e3e1b39c/Diagrams/ELK%20Stack%20Network.PNG)
 
 The main purpose of this network is to expose a load-balanced and monitored instance of DVWA, the "D*mn Vulnerable Web Application"
 
@@ -33,15 +33,6 @@ The configuration details of each machine may be found below.
 In addition to the above, Azure has provisioned a **load balancer** in front of all DVWA machines except for the jump box. The load balancer's targets are organized into the following availability zones:
 - **Availability Zone 1**: Web 1 to 3 
 - **Availability Zone 2**: ELK server
-
-## ELK Server Configuration
-
-The ELK VM exposes an Elastic Stack instance. **Docker** is used to download and manage an ELK container.
-
-Rather than configure ELK manually, we opted to develop a reusable Ansible Playbook to accomplish the task. This playbook is duplicated below.
-
-
-To use this playbook, one must log into the Jump Box, then issue: `ansible-playbook install_elk.yml`. This runs the `install_elk.yml` playbook on the `elk` host.
 
 ### Access Policies
 
@@ -65,13 +56,20 @@ A summary of the access policies in place can be found in the table below.
 | Web 2 (DVWA)   | No                  | 10.0.0.1-254         |
 | Web 3 (DVWA)   | No                  | 10.0.0.1-254         |
 
+## ELK Server Configuration
+
+The ELK VM exposes an Elastic Stack instance. **Docker** is used to download and manage an ELK container.
+
+Rather than configure ELK manually, we opted to develop a reusable Ansible Playbook to accomplish the task. This playbook is duplicated below.
+
+To use this playbook, one must log into the Jump Box, then issue: `ansible-playbook install_elk.yml`. This runs the `install_elk.yml` playbook on the `elk` host.
 
 ### Elk Configuration
 
 Ansible was used to automate configuration of the ELK machine. No configuration was performed manually, which is advantageous because It can easily deploy multi-tier applications. 
 There is no need to configure applications on every machine, all the tasks are specified in the playbook. 
 
-The command: 'ansible-playbook install_elk.yml' will automatically run the tasks in the playbook to each host machine through SSH.
+The command: 'ansible-playbook install_elk.yml elk' will automatically run the tasks in the playbook to each host machine through SSH.
 
 The playbook implements the following tasks:
 
