@@ -242,7 +242,7 @@ The easiest way to copy the playbooks is to use Git:
 $ cd /etc/ansible
 $ mkdir files
 # Clone Repository + IaC Files
-#$ 
+$ git clone https://github.com/zenithus/ELK-Stack-Project
 # Move Playbooks and hosts file Into `/etc/ansible`
 $ cp ELK-Stack-Project/Playbooks/* /etc/ansible
 $ cp ELK-Stack-Project/Ansible/hosts /etc/ansible
