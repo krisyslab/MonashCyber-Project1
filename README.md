@@ -13,7 +13,7 @@ This repository includes code defining the infrastructure below.
 
 Diagrams/ELK Stack Deployment.PNG
 
-![ELK Stack Deployment.png](https://github.com/zenithus/cyberzenithus/blob/5afc53f6943cef05b0bcba9c6e54d01f8b299410/Diagrams/ELK%20Stack%20Deployment.PNG)
+![ELK Stack Deployment.png](https://github.com/zenithus/ELK-Stack-Project/blob/2531628f32c14c27ca5c99a5cd78aedd8b21b1ae/Diagrams/ELK%20Stack%20Deployment.PNG)
 The main purpose of this network is to expose a load-balanced and monitored instance of DVWA, the "D*mn Vulnerable Web Application"
 
 Load balancing ensures that the application will be highly **available**, in addition to restricting **inbound access** to the network. The load balancer ensures that work to process incoming traffic will be shared by the three vulnerable web servers. Access controls will ensure that only authorized users — namely, ourselves — will be able to connect in the first place.
