@@ -2,14 +2,16 @@
 
 This document contains the following details:
 - Description of the Topology
-- ELK Configuration
+- Steps in Setting up the Azure Cloud Network
+- Docker Container Setup for the **jump box**
 - Access Policies
+- ELK Configuration
 - Beats in Use
 - Machines Being Monitored
 - Usage instructions
 
 
-### Description of the Topology
+## Description of the Topology
 This repository includes code defining the infrastructure below. 
 
 ![README Diagram.png](https://github.com/zenithus/ELK-Stack-Project/blob/ca272cf07f478a4658765454cc624cbbe3751bcd/Images/README%20Diagram.PNG)
@@ -34,27 +36,32 @@ In addition to the above, Azure has provisioned a **load balancer** in front of 
 - **Availability Zone 1**: Web 1 to 3 
 - **Availability Zone 2**: ELK server
 
-### Steps in Setting up the Azure Cloud Network
+## Steps in Setting up the Azure Cloud Network
 
-1. Create Resource Group: web_zero resource group. When deciding which region to set up the infrastructure, choose the closest data centre the business operation or the users are to ensure low latency and high availability. This will be the region for the whole infrastructure.
+These are based on the Network Topology as shown in the Diagram above.
 
-2. Create the virtual network: web_zero_vnet.
+1. Create the `Resource Group` (web_zero resource group). When deciding which region to set up the infrastructure, choose the closest data centre to the business operation or the location of most of the users to ensure low latency and high availability. This will be the region for the whole infrastructure.
+
+2. Create the `Virtual Network` (web_zero_vnet).
 The Virtual machines (VMs) are placed inside the virtual network. This is also where to define the network and subnet.
 
-3. Set up the network security group: web_zero_nsg. The firewall has to be in place before creating the VMs. This will be responsible for protecting the virtual network by monitoring the traffic. Create an inbound rule of "Deny All" denying all traffic and give it a high priority number. example 4096 - the bigger the number the lesser is the priority.
+3. Set up the `Network Security Group` (web_zero_nsg). This network security group will be selected when choosing the security group for the (web_zero_vnet) virtual network . The firewall has to be in place before creating the VMs. Create an inbound rule of `Deny All` denying all traffic and give it a high number e.g 4096 -- a lower number e.g 100 means higher priority and therefore will be executed first before the bigger numbers.
 
-4. Create the first virtual machine and add the user  - zeroAdmin.
-JumpBoxProvisioner - this will be used to connect to the network later on. Instead of using a password to connect to the VM, create a secure connection through SSH. Open terminal or Gitbash - generate ssh-key and paste the id_rsa.pub into the security box while creating the VM. It should have web_zero_nsg as the security group.
-Specifications: Ubuntu Server 18.04 with 1 CPU and 1 GB RAM. Give this VM a public IP. To connect run: ssh zeroAdmin@13.77.57.149
+4. Create the `jump box VM` (JumpBoxProvisioner). We addedd the user `zeroAdmin` for this setup.
+the jump box VM will be used to connect to the network later on. Instead of using a password to connect to the VM, create a secure connection through `SSH`. Open terminal or Gitbash of your workstation to generate `ssh-key` and paste the `id_rsa.pub` into the security box while creating the VM. Give it a `static Public IP address`.
 
-5. Create the VMs: Web-1, Web-2 and Web-3. Set up the subnet as default and without public IP. Use the same SSH key when connecting to them this time. Set the security group: web_zero_nsg
-Specifications: 1 vCPU and 2 GB RAM Ubuntu 18.04 Standard - B1ms
+5. Check the IP address of your workstation - type `whatismyip` in google to see the IPV4. In this network, we used the IPV4 address of `115.70.22.154` as the IP address of the workstation. Create a new rule in the network security group (web_zero_nsg) to allow SSH into the jump box (JumBoxProvisioner) from the IP address of the workstation. Give a low priority number - example 100. Create a new rule allowing SSH into the VMs with source IP 13.77.57.149 and destination: VirtualNetwork.
+ 
+6. Create the three VMs: Web-1, Web-2 and Web-3. Set up the subnet as default and without public IP. Use the same SSH key when connecting to them this time. Set the security group: web_zero_nsg. While creating the VMs make sure to choose the availability options and create a new `Availability Set`: web_zero_set. All VMs should belong to the same Availability set if they are to be placed inside a Load Balancer Backend Pool.
 
-Whiile creating the VMs make sure to choose the availability options and create a new Availability Set: web_zero_set. All VMs should belong to the same Availability set if they are to be placed in the same Load Balancer.
+7. Create the `Load balancer` and give it a `static Public IP address`. Then create a `Health Probe`. Create a `Backend Pool`: web_zero_pool and add the 3 VMs. Add a Load Balance rule: web_zero_lbr that will forward port 80 traffic from the load balancer to the VirtualNetwork.
 
-Create a new rule in the network security web_zero_nsg to allow SSH into the JumBoxProvisioner from the IP address of the workstation. Give a low priority number - example 100. Run the command: ssh zeroAdmin@13.77.57.149 to connect to the JumpBoxProvisioner
+8. Create a new security rule in web_zero_nsg to allow port 80 traffic from the IP address of the workstation into the VirtualNetwork where the 3 VM servers are located. Remove the "Deny All" rule that was set up earlier in step 3. To test if they are accessible: go to a web browser and type - http://20.190.121.162/setup.php
 
-Install the docker: sudo apt install docker.io. Check the staus: sudo systemctl status docker. Pull the container: sudo docker pull cyberxsecurity/ansible. Then run the command: docker run -ti cyberxsecurity/ansible: latest bash. then exit. Create a new rule allowing SSH into the VMs with source IP 13.77.57.149 and destination: VirtualNetwork.
+
+Run the command: `ssh zeroAdmin@13.77.57.149` to connect to the JumpBoxProvisioner
+
+Install the docker: sudo apt install docker.io. Check the staus: sudo systemctl status docker. Pull the container: sudo docker pull cyberxsecurity/ansible. Then run the command: docker run -ti cyberxsecurity/ansible: latest bash. then exit. 
 
 Open terminal or gitbash, connect to the container by running sudo docker run -it cyberxsecurity/ansible /bin/bash. Generate a new SSH key (id_rsa.pub) to replace all the public key that was initially used while creating the 3 VMs. 
 Locate the Ansible config file and hosts file:  cd /etc/ansible. Run: nano /etc/ansible/hosts. unhash the [webserver] and add below it the IP addresses of the VMs and the location of the python script. example:
@@ -62,14 +69,9 @@ Locate the Ansible config file and hosts file:  cd /etc/ansible. Run: nano /etc/
 
 Now deploy the configurations for the 3 VM servers using YAML. Create a YAML playbook file that will be used for the configurations. Run nano pentest.yml and edit it to add the configurations. after adding the configurations run the command ansible-playbook pentest.yml to deploy them to all the VMs. SSH to any of the VM servers to test. Run curl localhost/setup.php - it should output a DVWA html code which was included in the configuration for the next Cloud Security activity.
 
-Create the Load balancer and give it a static Public IP address. Then create a health probe. Create a backend pool: web_zero_pool and add the 3 VMs. Add a Load Balance rule: web_zero_lbr that will forward port 80 traffic from the load balancer to the VirtualNetwork.
 
-Create a new security rule in web_zero_nsg to allow port 80 traffic from the internet into the VirtualNetwork where the 3 VM servers are located.
-Remove the "Deny All" rule that was set up earlier in step 3.
-To test if they are accessible: go to a web browser and type -
-http://20.190.121.162/setup.php
 
-### Docker Container Setup for the **jump box**
+## Docker Container Setup for the **jump box**
 
 Running the commands below will configure the **jump box** to run Docker containers and to install a container.
 
@@ -101,7 +103,7 @@ exit
 ansible all -m ping
 ```
 
-### Access Policies
+## Access Policies
 
 The **jump box** machine can accept connections from the Internet. Access to this machine is only allowed from the IP address `115.70.22.154` which is the admin work station.
 
@@ -131,7 +133,7 @@ Rather than configure ELK manually, we opted to develop a reusable Ansible Playb
 
 To use this playbook, one must log into the Jump Box, then issue: `ansible-playbook install_elk.yml`. This runs the `install_elk.yml` playbook on the `elk` host.
 
-### Elk Configuration
+## Elk Configuration
 
 Ansible was used to automate configuration of the ELK machine. No configuration was performed manually, which is advantageous because It can easily deploy multi-tier applications. 
 There is no need to configure applications on every machine, all the tasks are specified in the playbook. 
@@ -206,7 +208,7 @@ The playbook is duplicated below.
             - 5044:5044
 ```
 
-### Target Machines & Beats
+## Target Machines & Beats
 This ELK server is configured to monitor the Web 1, Web 2 and Web 3 VMs, at `10.0.0.5`, `10.0.0.6` and `10.0.0.7`, respectively.
 
 We have installed the following Beats on these machines:
@@ -293,7 +295,7 @@ The playbook below installs Metricbeat on the target hosts.
     command: service metricbeat start
 ```
 
-### Using the Playbooks
+## Using the Playbooks
 In order to use the playbooks, you will need to have an Ansible control node already configured. We use the **jump box** for this purpose.
 
 
