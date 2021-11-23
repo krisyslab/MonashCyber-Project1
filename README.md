@@ -12,7 +12,7 @@ This document contains the following details:
 ### Description of the Topology
 This repository includes code defining the infrastructure below. 
 
-![README Diagram.png](https://github.com/zenithus/ELK-Stack-Project/blob/fc412dc6edb6b666183d9f80cf6de1b1de654acd/Diagrams/README%20Diagram.PNG)
+![README Diagram.png](https://github.com/zenithus/ELK-Stack-Project/blob/ca272cf07f478a4658765454cc624cbbe3751bcd/Images/README%20Diagram.PNG)
 
 The main purpose of this network is to expose a load-balanced and monitored instance of DVWA, the "D*mn Vulnerable Web Application"
 
