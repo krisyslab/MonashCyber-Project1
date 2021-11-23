@@ -45,18 +45,34 @@ These are based on the Network Topology as shown in the Diagram above.
 2. Create the `Virtual Network` (web_zero_vnet).
 The Virtual machines (VMs) are placed inside the virtual network. This is also where to define the network and subnet.
 
-3. Set up the `Network Security Group` (web_zero_nsg). This network security group will be selected when choosing the security group for the (web_zero_vnet) virtual network . The firewall has to be in place before creating the VMs. Create an inbound rule of `Deny All` denying all traffic and give it a high number e.g 4096 -- a lower number e.g 100 means higher priority and therefore will be executed first before the bigger numbers.
+3. Set up the `Network Security Group` (web_zero_nsg). This network security group will be selected when choosing the security group for the (web_zero_vnet) virtual network . The firewall has to be in place before creating the VMs. 
 
-4. Create the `jump box VM` (JumpBoxProvisioner). We addedd the user `zeroAdmin` for this setup.
+Create an inbound rule of `Deny All` denying all traffic and give it a high number e.g 4096 -- a lower number e.g 100 means higher priority and therefore will be executed first before the bigger numbers.
+
+4. Check the IP address of your workstation - type `whatismyip` in google to see the IPV4. In this network, we used the IPV4 address of `115.70.22.154` as the IP address of the workstation. 
+
+Create a new rule in the network security group (web_zero_nsg) to allow SSH into the jump box (JumBoxProvisioner) from the IP address of the workstation. Give a low number e.g 100 to have a higher priority.
+
+5. Create the `jump box VM` (JumpBoxProvisioner). We addedd the user `zeroAdmin` for this setup.
 the jump box VM will be used to connect to the network later on. Instead of using a password to connect to the VM, create a secure connection through `SSH`. Open terminal or Gitbash of your workstation to generate `ssh-key` and paste the `id_rsa.pub` into the security box while creating the VM. Give it a `static Public IP address`.
 
-5. Check the IP address of your workstation - type `whatismyip` in google to see the IPV4. In this network, we used the IPV4 address of `115.70.22.154` as the IP address of the workstation. Create a new rule in the network security group (web_zero_nsg) to allow SSH into the jump box (JumBoxProvisioner) from the IP address of the workstation. Give a low priority number - example 100. Create a new rule allowing SSH into the VMs with source IP 13.77.57.149 and destination: VirtualNetwork.
+6. Create the three VMs: Web-1, Web-2 and Web-3. In setting up each individual VM:
+  - Set up the subnet as default and without public IP
+  - Use the same SSH key when connecting to them this time. 
+  - Set the security group: web_zero_nsg. 
+  - While creating the VMs make sure to choose the availability options and create a new `Availability Set`: web_zero_set. All VMs should belong to the same Availability set if they are to be placed inside a Load Balancer Backend Pool. 
  
-6. Create the three VMs: Web-1, Web-2 and Web-3. Set up the subnet as default and without public IP. Use the same SSH key when connecting to them this time. Set the security group: web_zero_nsg. While creating the VMs make sure to choose the availability options and create a new `Availability Set`: web_zero_set. All VMs should belong to the same Availability set if they are to be placed inside a Load Balancer Backend Pool.
+  Create a new rule allowing SSH into the VMs with source IP 10.0.0.4 and destination: VirtualNetwork.
 
-7. Create the `Load balancer` and give it a `static Public IP address`. Then create a `Health Probe`. Create a `Backend Pool`: web_zero_pool and add the 3 VMs. Add a Load Balance rule: web_zero_lbr that will forward port 80 traffic from the load balancer to the VirtualNetwork.
+7. Create the `Load balancer` and give it a `static Public IP address`. Create a `Health Probe`. Create a `Backend Pool` (Load Balancer Backend Pool) and add the 3 VMs (Web 1, Web 2, Web 3). 
 
-8. Create a new security rule in web_zero_nsg to allow port 80 traffic from the IP address of the workstation into the VirtualNetwork where the 3 VM servers are located. Remove the "Deny All" rule that was set up earlier in step 3. To test if they are accessible: go to a web browser and type - http://20.190.121.162/setup.php
+Add a Load Balance rule that will forward port 80 traffic from the load balancer to the VirtualNetwork.
+
+8. Create a new security rule in network security group (web_zero_nsg) to allow port 80 traffic from the IP address of the workstation into the VirtualNetwork via the Public IP address of the Load Balancer. 
+
+Remove the "Deny All" rule that was set up earlier in step 3. 
+
+To test if they are accessible: go to a web browser and type - http://20.190.121.162/setup.php
 
 
 Run the command: `ssh zeroAdmin@13.77.57.149` to connect to the JumpBoxProvisioner
