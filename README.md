@@ -12,7 +12,7 @@ This document contains the following details:
 ### Description of the Topology
 This repository includes code defining the infrastructure below. 
 
-![ELK Stack Deployment.png](https://github.com/zenithus/ELK-Stack-Project/blob/ac09b5bc84c28798928983c9016a5063e3e1b39c/Diagrams/ELK%20Stack%20Network.PNG)
+![README Diagram.png](https://github.com/zenithus/ELK-Stack-Project/blob/fc412dc6edb6b666183d9f80cf6de1b1de654acd/Diagrams/README%20Diagram.PNG)
 
 The main purpose of this network is to expose a load-balanced and monitored instance of DVWA, the "D*mn Vulnerable Web Application"
 
@@ -22,23 +22,95 @@ Integrating an ELK server allows users to easily monitor the vulnerable VMs for 
 
 The configuration details of each machine may be found below.
 
-| Name         | Function    | IP Address | Operating System |
-|--------------|-------------|------------|------------------|
-| Jump Box     | Gateway     | 10.0.0.4   | Linux            |
-| Web 1 (DVWA) | Web Server  | 10.0.0.5   | Linux            |
-| WEb 2 (DVWA) | Web Server  | 10.0.0.6   | Linux            |
-| Web 3 (DVWA) | Web Server  | 10.0.0.7   | Linux            | 
-| ELK server   | Monitoring  | 10.1.0.4   | Linux            |
+| Name         | Function    | IP Address | Operating System | Specifications                  | Container                      |
+|--------------|-------------|------------|------------------|---------------------------------|--------------------------------|
+| Jump Box     | Gateway     | 10.0.0.4   | Linux            | UbuntuServer, 18.4-lts-gen2     | cyberxsecurity/ansible: latest |
+|              |             |            |                  | Standard_B1s, vCPUs 1, RAM 1GB  |                                |
+| Web 1 (DVWA) | Web Server  | 10.0.0.5   | Linux            | UbuntuServer, 18.4-lts-gen2     | cyberxsecurity/dvwa            |
+|              |             |            |                  | Standard_B1ms, vCPUs 1, RAM 2GB |                                |
+| WEb 2 (DVWA) | Web Server  | 10.0.0.6   | Linux            | UbuntuServer, 18.4-lts-gen2     | cyberxsecurity/dvwa            |
+|              |             |            |                  | Standard_B1ms, vCPUs 1, RAM 2GB |                                |
+| Web 3 (DVWA) | Web Server  | 10.0.0.7   | Linux            | UbuntuServer, 18.4-lts-gen2     | cyberxsecurity/dvwa            |
+|              |             |            |                  | Standard_B1ms, vCPUs 1, RAM 2GB |                                |
+| ELK server   | Monitoring  | 10.1.0.4   | Linux            | UbuntuServer, 18.4-lts--gen2    | sebp/elk:761                   |
+|              |             |            |                  | Standard_B2s, vCPUs 2, RAM 4GB  |                                |
 
 In addition to the above, Azure has provisioned a **load balancer** in front of all DVWA machines except for the jump box. The load balancer's targets are organized into the following availability zones:
 - **Availability Zone 1**: Web 1 to 3 
 - **Availability Zone 2**: ELK server
 
+### Steps in Setting up the Azure Cloud Network
+
+1. Create Resource Group: web_zero resource group. When deciding which region to set up the infrastructure, choose the closest data centre the business operation or the users are to ensure low latency and high availability. This will be the region for the whole infrastructure.
+
+2. Create the virtual network: web_zero_vnet.
+The Virtual machines (VMs) are placed inside the virtual network. This is also where to define the network and subnet.
+
+3. Set up the network security group: web_zero_nsg. The firewall has to be in place before creating the VMs. This will be responsible for protecting the virtual network by monitoring the traffic. Create an inbound rule of "Deny All" denying all traffic and give it a high priority number. example 4096 - the bigger the number the lesser is the priority.
+
+4. Create the first virtual machine and add the user  - zeroAdmin.
+JumpBoxProvisioner - this will be used to connect to the network later on. Instead of using a password to connect to the VM, create a secure connection through SSH. Open terminal or Gitbash - generate ssh-key and paste the id_rsa.pub into the security box while creating the VM. It should have web_zero_nsg as the security group.
+Specifications: Ubuntu Server 18.04 with 1 CPU and 1 GB RAM. Give this VM a public IP. To connect run: ssh zeroAdmin@13.77.57.149
+
+5. Create the VMs: Web-1, Web-2 and Web-3. Set up the subnet as default and without public IP. Use the same SSH key when connecting to them this time. Set the security group: web_zero_nsg
+Specifications: 1 vCPU and 2 GB RAM Ubuntu 18.04 Standard - B1ms
+
+Whiile creating the VMs make sure to choose the availability options and create a new Availability Set: web_zero_set. All VMs should belong to the same Availability set if they are to be placed in the same Load Balancer.
+
+Create a new rule in the network security web_zero_nsg to allow SSH into the JumBoxProvisioner from the IP address of the workstation. Give a low priority number - example 100. Run the command: ssh zeroAdmin@13.77.57.149 to connect to the JumpBoxProvisioner
+
+Install the docker: sudo apt install docker.io. Check the staus: sudo systemctl status docker. Pull the container: sudo docker pull cyberxsecurity/ansible. Then run the command: docker run -ti cyberxsecurity/ansible: latest bash. then exit. Create a new rule allowing SSH into the VMs with source IP 13.77.57.149 and destination: VirtualNetwork.
+
+Open terminal or gitbash, connect to the container by running sudo docker run -it cyberxsecurity/ansible /bin/bash. Generate a new SSH key (id_rsa.pub) to replace all the public key that was initially used while creating the 3 VMs. 
+Locate the Ansible config file and hosts file:  cd /etc/ansible. Run: nano /etc/ansible/hosts. unhash the [webserver] and add below it the IP addresses of the VMs and the location of the python script. example:
+10.0.0.5 ansible_python_interpreter=/usr/bin/python3 then run: nano ansible.cfg look for the "remote_user" and change to remote_user = zeroAdmin. Try to ping the VMs: ansible -m ping all. The output should have "SUCCESS" to all 3 VMs.
+
+Now deploy the configurations for the 3 VM servers using YAML. Create a YAML playbook file that will be used for the configurations. Run nano pentest.yml and edit it to add the configurations. after adding the configurations run the command ansible-playbook pentest.yml to deploy them to all the VMs. SSH to any of the VM servers to test. Run curl localhost/setup.php - it should output a DVWA html code which was included in the configuration for the next Cloud Security activity.
+
+Create the Load balancer and give it a static Public IP address. Then create a health probe. Create a backend pool: web_zero_pool and add the 3 VMs. Add a Load Balance rule: web_zero_lbr that will forward port 80 traffic from the load balancer to the VirtualNetwork.
+
+Create a new security rule in web_zero_nsg to allow port 80 traffic from the internet into the VirtualNetwork where the 3 VM servers are located.
+Remove the "Deny All" rule that was set up earlier in step 3.
+To test if they are accessible: go to a web browser and type -
+http://20.190.121.162/setup.php
+
+### Docker Container Setup for the **jump box**
+
+Running the commands below will configure the **jump box** to run Docker containers and to install a container.
+
+```bash
+# ssh to the jump box
+$ ssh zeroAdmin@13.77.57.149
+# install docker.io on your jump box
+zeroAdmin@JumpBoxProvisioner:~$ sudo apt update
+zeroAdmin@JumpBoxProvisioner:~$ sudo apt install docker.io
+# Verify that the Docker service is running
+zeroAdmin@JumpBoxProvisioner:~$ sudo systemctl status docker
+# If the Docker service is not running, start it with:
+zeroAdmin@JumpBoxProvisioner:~$ sudo systemctl start docker
+# Once Docker is installed, pull the container `cyberxsecurity/ansible`.
+zeroAdmin@JumpBoxProvisioner:~$ sudo docker pull cyberxsecurity/ansible
+# Launch the Ansible container
+zeroAdmin@JumpBoxProvisioner:~$ docker run -ti cyberxsecurity/ansible:latest bash
+# Check for the installed container
+zeroAdmin@JumpBoxProvisioner:~$ sudo docker container list -a
+sudo docker start (container)
+sudo docker ps
+sudo docker attach (container)
+**now check**
+ssh username@Web-1IP
+exit
+ssh username@Web2-IP
+exit
+**now ping again**
+ansible all -m ping
+```
+
 ### Access Policies
 
-The **jump box** machine can accept connections from the Internet. Access to this machine is only allowed from the IP address `115.70.22.154`which is the admin work station.
+The **jump box** machine can accept connections from the Internet. Access to this machine is only allowed from the IP address `115.70.22.154` which is the admin work station.
 
-The **ELK server** can accept connections from the internet through port 5601 and the only IP address allowed is `115.70.22.154`which is the admin work station.
+The **ELK server** can accept connections from the internet through port 5601 and the only IP address allowed is `115.70.22.154` which is the admin work station.
 
 The machines on the internal network are _not_ exposed to the public Internet. Access to the internal network is via ssh on port 22 from the **jump box**.
 
@@ -48,13 +120,13 @@ Machines _within_ the network can only be accessed by **each other**. The Web 1,
 
 A summary of the access policies in place can be found in the table below.
 
-| Name           | Publicly Accessible | Allowed IP Addresses |
-|----------------|---------------------|----------------------|
-| Jump Box       | Yes                 | 115.70.22.154        |
-| ELK            | Yes                 | 115.70.22.154        |
-| Web 1 (DVWA)   | No                  | 10.0.0.1-254         |
-| Web 2 (DVWA)   | No                  | 10.0.0.1-254         |
-| Web 3 (DVWA)   | No                  | 10.0.0.1-254         |
+| Name           | Publicly Accessible | Open Ports                     | Allowed IP Addresses |
+|----------------|---------------------|--------------------------------|----------------------|
+| Jump Box       | Yes                 | Ports 22 and 80                | 115.70.22.154        |
+| ELK            | Yes                 | Ports 22, 80, 5601, 9200, 5044 | 115.70.22.154        |
+| Web 1 (DVWA)   | No                  | Port 22                        | 10.0.0.1-254         |
+| Web 2 (DVWA)   | No                  | Port 22                        | 10.0.0.1-254         |
+| Web 3 (DVWA)   | No                  | Port 22                        | 10.0.0.1-254         |
 
 ## ELK Server Configuration
 
