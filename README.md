@@ -22,18 +22,13 @@ Integrating an ELK server allows users to easily monitor the vulnerable VMs for 
 
 The configuration details of each machine may be found below.
 
-| Name         | Function    | IP Address | Operating System | Specifications                  | Container                      |
-|--------------|-------------|------------|------------------|---------------------------------|--------------------------------|
-| Jump Box     | Gateway     | 10.0.0.4   | Linux            | UbuntuServer, 18.4-lts-gen2     | cyberxsecurity/ansible: latest |
-|              |             |            |                  | Standard_B1s, vCPUs 1, RAM 1GB  |                                |
-| Web 1 (DVWA) | Web Server  | 10.0.0.5   | Linux            | UbuntuServer, 18.4-lts-gen2     | cyberxsecurity/dvwa            |
-|              |             |            |                  | Standard_B1ms, vCPUs 1, RAM 2GB |                                |
-| WEb 2 (DVWA) | Web Server  | 10.0.0.6   | Linux            | UbuntuServer, 18.4-lts-gen2     | cyberxsecurity/dvwa            |
-|              |             |            |                  | Standard_B1ms, vCPUs 1, RAM 2GB |                                |
-| Web 3 (DVWA) | Web Server  | 10.0.0.7   | Linux            | UbuntuServer, 18.4-lts-gen2     | cyberxsecurity/dvwa            |
-|              |             |            |                  | Standard_B1ms, vCPUs 1, RAM 2GB |                                |
-| ELK server   | Monitoring  | 10.1.0.4   | Linux            | UbuntuServer, 18.4-lts--gen2    | sebp/elk:761                   |
-|              |             |            |                  | Standard_B2s, vCPUs 2, RAM 4GB  |                                |
+| Name         | Function    | IP Address | Operating System | Specifications                                                   | Container                      |
+|--------------|-------------|------------|------------------|------------------------------------------------------------------|--------------------------------|
+| Jump Box     | Gateway     | 10.0.0.4   | Linux            | UbuntuServer, 18.4-lts-gen2, Standard_B1s, vCPUs 1, RAM 1GB      | cyberxsecurity/ansible: latest |
+| Web 1 (DVWA) | Web Server  | 10.0.0.5   | Linux            | UbuntuServer, 18.4-lts-gen2, Standard_B1ms, vCPUs 1, RAM 2GB     | cyberxsecurity/dvwa            |
+| WEb 2 (DVWA) | Web Server  | 10.0.0.6   | Linux            | UbuntuServer, 18.4-lts-gen2, Standard_B1ms, vCPUs 1, RAM 2GB     | cyberxsecurity/dvwa            |
+| Web 3 (DVWA) | Web Server  | 10.0.0.7   | Linux            | UbuntuServer, 18.4-lts-gen2, Standard_B1ms, vCPUs 1, RAM 2GB     | cyberxsecurity/dvwa            |
+| ELK server   | Monitoring  | 10.1.0.4   | Linux            | UbuntuServer, 18.4-lts--gen2, Standard_B2s, vCPUs 2, RAM 4GB     | sebp/elk:761                   |
 
 In addition to the above, Azure has provisioned a **load balancer** in front of all DVWA machines except for the jump box. The load balancer's targets are organized into the following availability zones:
 - **Availability Zone 1**: Web 1 to 3 
