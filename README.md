@@ -139,9 +139,17 @@ This time go back to the terminal or Gitbash on your workstation and run these c
       root@9ba994bbeca9:/# cd /etc/ansible
       root@9ba994bbeca9/etc/ansible:/# nano /etc/ansible/hosts
       # Unhash the [webserver] and add below it the IP addresses of the VMs and the location of the python script and then save.
+              `[webserver]
                 10.0.0.5 ansible_python_interpreter=/usr/bin/python3
-      # Change the "remote_user = root" to "remote_user = zeroAdmin"
+                10.0.0.6 ansible_python_interpreter=/usr/bin/python3
+                10.0.0.7 ansible_python_interpreter=/usr/bin/python3`
+      # Change the Ansible configuration file to use your admin account for SSH connections.
       root@9ba994bbeca9/etc/ansible:/# nano ansible.cfg
+      # Scroll down to the `remote_user` option. Uncomment the `remote_user` line and replace `root` with your admin username using this format:
+				      ` # default user to use for playbooks if user is not specified
+                # (/usr/bin/ansible will use current user as default)
+                remote_user = zeroAdmin (user-name-for-web-VMs)`
+      
 ssh username@Web-1IP
 exit
 ssh username@Web2-IP
@@ -311,40 +319,39 @@ The playbook below installs Metricbeat on the target hosts.
 
 ```yaml
 ---
-- name: Install metric beat
-  hosts: webservers
-  become: true
-  tasks:
+  - name: Install metric beat
+    hosts: webservers
+    become: true
+    tasks:
     # Use command module
-  - name: Download metricbeat
-    command: curl -L -O https://artifacts.elastic.co/downloads/beats/metricbeat/metricbeat-7.4.0-amd64.deb
+    - name: Download metricbeat
+      command: curl -L -O https://artifacts.elastic.co/downloads/beats/metricbeat/metricbeat-7.4.0-amd64.deb
 
     # Use command module
-  - name: install metricbeat
-    command: dpkg -i metricbeat-7.4.0-amd64.deb
+    - name: install metricbeat
+      command: dpkg -i metricbeat-7.4.0-amd64.deb
 
     # Use copy module
-  - name: drop in metricbeat config
-    copy:
-      src: /etc/ansible/files/metricbeat-config.yml
-      dest: /etc/metricbeat/metricbeat.yml
+    - name: drop in metricbeat config
+      copy:
+        src: /etc/ansible/files/metricbeat-config.yml
+        dest: /etc/metricbeat/metricbeat.yml
 
     # Use command module
-  - name: enable and configure docker module for metric beat
-    command: metricbeat modules enable docker
+    - name: enable and configure docker module for metric beat
+      command: metricbeat modules enable docker
 
     # Use command module
-  - name: setup metric beat
-    command: metricbeat setup
+    - name: setup metric beat
+      command: metricbeat setup
 
     # Use command module
-  - name: start metric beat
-    command: service metricbeat start
+    - name: start metric beat
+      command: service metricbeat start
 ```
 
 ## Using the Playbooks
-In order to use the playbooks, you will need to have an Ansible control node already configured. We use the **jump box** for this purpose.
-
+In order to use the playbooks, you will need to have an Ansible control node already configured. Please refer to the `Docker Container Setup for the **jump box**` above.
 
 To use the playbooks, we must perform the following steps:
 - Copy the playbooks to the Ansible Control Node
