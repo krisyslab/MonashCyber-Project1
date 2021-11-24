@@ -123,10 +123,10 @@ Running the commands below will configure the **jump box** to run Docker contain
 Generate a new SSH key (id_rsa.pub) to replace all the public key that was initially used while creating the 3 VMs.
 
   ```bash
-      root@9ba994bbeca9:/# ssh-keygen
-      root@9ba994bbeca9:/# ls .ssh/
+      root@9ba994bbeca9:~# ssh-keygen
+      root@9ba994bbeca9:~# ls .ssh/
       id_rsa  id_rsa.pub
-      root@9ba994bbeca9:/# cat .ssh/id_rsa.pub
+      root@9ba994bbeca9:~# cat .ssh/id_rsa.pub
       ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDz5KX3urPPKbYRKS3J06wyw5Xj4eZRQTcg6u2LpnSsXwPWYBpCdF5lE3tJlbp7AsnXlXpq2G0oAy5dcLJX2anpfaEBTEvZ0mFBS24AdNnF3ptan5SmEM/
   ```
 Go back to the Azure portal and `Reset the password` for the 3 DVWA VMs (Web 1, Web 2 and Web 3)
@@ -136,20 +136,33 @@ This time go back to the terminal or Gitbash on your workstation and run these c
 
   ```bash
       # Locate the Ansible config file and hosts file
-      root@9ba994bbeca9:/# cd /etc/ansible
-      root@9ba994bbeca9/etc/ansible:/# nano /etc/ansible/hosts
+      root@9ba994bbeca9:~# cd /etc/ansible
+      root@9ba994bbeca9:/etc/ansible# nano /etc/ansible/hosts
       # Unhash the [webserver] and add below it the IP addresses of the VMs and the location of the python script and then save.
               `[webserver]
                 10.0.0.5 ansible_python_interpreter=/usr/bin/python3
                 10.0.0.6 ansible_python_interpreter=/usr/bin/python3
                 10.0.0.7 ansible_python_interpreter=/usr/bin/python3`
       # Change the Ansible configuration file to use your admin account for SSH connections.
-      root@9ba994bbeca9/etc/ansible:/# nano ansible.cfg
-      # Scroll down to the `remote_user` option. Uncomment the `remote_user` line and replace `root` with your admin username using this format:
-				      ` # default user to use for playbooks if user is not specified
-                # (/usr/bin/ansible will use current user as default)
-                remote_user = zeroAdmin (user-name-for-web-VMs)`
-      
+      root@9ba994bbeca9:/etc/ansible# nano ansible.cfg
+      # Scroll down to the `remote_user` option. 
+      # Uncomment the `remote_user` line and replace `root` with your admin username as shown below:
+				      `remote_user = zeroAdmin (user-name-for-web-VMs)`
+      # Test an Ansible connection using the appropriate Ansible command.
+      root@9ba994bbeca9:/etc/ansible# ansible -m ping all
+      10.0.0.6 | SUCCESS => {
+          "changed": false,
+          "ping": "pong"
+      }
+      10.0.0.5 | SUCCESS => {
+          "changed": false,
+          "ping": "pong"
+      }
+      10.0.0.7 | SUCCESS => {
+          "changed": false,
+          "ping": "pong"
+      }
+  ```
 ssh username@Web-1IP
 exit
 ssh username@Web2-IP
