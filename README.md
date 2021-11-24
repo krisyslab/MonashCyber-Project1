@@ -193,7 +193,7 @@ Now deploy the configurations for the 3 VM servers using YAML. Create a YAML pla
           enabled: yes
 ```
 
-  ```bash
+```bash
 
 root@9ba994bbeca9:/etc/ansible# ansible-playbook pentest.yml
 [WARNING]: ansible.utils.display.initialize_locale has not been called, this may result in incorrectly calculated
@@ -238,7 +238,7 @@ PLAY RECAP *********************************************************************
 10.0.0.6                   : ok=6    changed=6    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
 10.0.0.7                   : ok=6    changed=6    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
 
-  ```
+```
 
 
 
@@ -251,7 +251,6 @@ ssh username@Web2-IP
 exit
 **now ping again**
 ansible all -m ping
-```
 
 ## Access Policies
 
@@ -360,6 +359,7 @@ The playbook is duplicated below.
 ```
 
 ## Target Machines & Beats
+
 This ELK server is configured to monitor the Web 1, Web 2 and Web 3 VMs, at `10.0.0.5`, `10.0.0.6` and `10.0.0.7`, respectively.
 
 We have installed the following Beats on these machines:
