@@ -47,25 +47,25 @@ The Virtual machines (VMs) are placed inside the virtual network. This is also w
 
 3. Set up the `Network Security Group`. This network security group will be selected when choosing the security group for the VMs of the newly created virtual network. The firewall has to be in place before creating the VMs. 
 
-Create an inbound rule of `Deny All` denying all traffic and give it a high number e.g 4096 -- a lower number e.g 100 means higher priority and therefore will be executed first before the bigger numbers.
+   Create an inbound rule of `Deny All` denying all traffic and give it a high number e.g 4096 -- a lower number e.g 100 means higher priority and therefore will be executed first before the bigger numbers.
 
 4. Check the IP address of your workstation - type `whatismyip` in google to see the IPV4. In the above topology, we used the IPV4 address of `115.70.22.154` as the IP address of the workstation. 
 
-Create a new rule in the network security group to allow SSH into the jump box from the IP address of the workstation. Give a low number e.g 100 to ensure a higher priority.
+   Create a new rule in the network security group to allow SSH into the jump box from the IP address of the workstation. Give a low number e.g 100 to ensure a higher priority.
 
 5. Create the `jump box VM`. We addedd the user `zeroAdmin` for this setup.
 the jump box VM will be used to connect to the network later on. Instead of using a password to connect to the VM, create a secure connection through `SSH`. Open terminal or Gitbash on your workstation. 
 
-Generate the public key:
+   Generate the public key:
 
  ```bash
     root@9ba994bbeca9:~# ssh-keygen
     root@9ba994bbeca9:~# ls .ssh/
     id_rsa  id_rsa.pub
-    root@9ba994bbeca9:/# cat .ssh/id_rsa.pub
-
+    root@9ba994bbeca9:~# cat .ssh/id_rsa.pub
+    ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDz5KX3urPPKbYRKS3J06wyw5Xj4eZRQTcg6u2LpnSsXwPWYBpCdF5lE3tJlbp7AsnXlXpq2G0oAy5dcLJX2anpfaEBTEvZ0mFBS24AdNnF3ptan5SmEM/
  ```
-Copy the key into the SSH public key box while creating the jump box VM. Give the jump box VM a `static Public IP address`.
+   Copy the key into the SSH public key box while creating the jump box VM. Give the jump box VM a `static Public IP address`.
 
 6. Create the three VMs: Web-1, Web-2 and Web-3. In setting up each individual VM:
   - Set up the subnet as default and without public IP
@@ -73,17 +73,17 @@ Copy the key into the SSH public key box while creating the jump box VM. Give th
   - Select the security group - the same security group selected for the jump box. 
   - In the Availability Options click create a new `Availability Set` name your availability set. All VMs should belong to the same Availability set if they are to be placed inside the same Load Balancer Backend Pool. 
  
-  Create a new rule allowing SSH into the VMs with source IP 10.0.0.4 (jump box VM) and destination: VirtualNetwork.
+   Create a new rule allowing SSH into the VMs with source IP 10.0.0.4 (jump box VM) and destination: VirtualNetwork.
 
 7. Create the `Load balancer` and give it a `static Public IP address`. Create a `Health Probe`. Create a `Backend Pool` (Load Balancer Backend Pool) and add the 3 VMs (Web 1, Web 2, Web 3) in the backend pool.
 
-Add a Load Balance rule that will forward port 80 traffic from the load balancer to the VirtualNetwork.
+   Add a Load Balance rule that will forward port 80 traffic from the load balancer to the VirtualNetwork.
 
 8. Create a new security rule in network security group to allow port 80 traffic from the IP address of the workstation into the VirtualNetwork via the Public IP address of the Load Balancer. 
 
-Remove the "Deny All" rule that was set up earlier in step 3. 
+   Remove the "Deny All" rule that was set up earlier in step 3. 
 
-To test if they are accessible: go to a web browser and type - http://20.190.121.162/setup.php
+   To test if they are accessible: go to a web browser and type - http://20.190.121.162/setup.php
 
 
 
@@ -97,30 +97,51 @@ Now deploy the configurations for the 3 VM servers using YAML. Create a YAML pla
 
 ## Docker Container Setup for the **jump box**
 
-Running the commands below will configure the **jump box** to run Docker containers and to install a container.
+Running the commands below will configure the **jump box** to run Docker containers and to install a containers for the 3 DVWA VMs.
 
-```bash
-# ssh to the jump box
-$ ssh zeroAdmin@13.77.57.149
-# install docker.io on your jump box
-zeroAdmin@JumpBoxProvisioner:~$ sudo apt update
-zeroAdmin@JumpBoxProvisioner:~$ sudo apt install docker.io
-# Verify that the Docker service is running
-zeroAdmin@JumpBoxProvisioner:~$ sudo systemctl status docker
-# If the Docker service is not running, start it with:
-zeroAdmin@JumpBoxProvisioner:~$ sudo systemctl start docker
-# Once Docker is installed, pull the container `cyberxsecurity/ansible`.
-zeroAdmin@JumpBoxProvisioner:~$ sudo docker pull cyberxsecurity/ansible
-# Launch the Ansible container
-zeroAdmin@JumpBoxProvisioner:~$ docker run -ti cyberxsecurity/ansible:latest bash
-# Check for the installed container
-zeroAdmin@JumpBoxProvisioner:~$ sudo docker container list -a
-#run the following commands to start and attach the container
-zeroAdmin@JumpBoxProvisioner:~$ sudo docker start (name of container)
-zeroAdmin@JumpBoxProvisioner:~$ sudo docker ps
-zeroAdmin@JumpBoxProvisioner:~$ sudo docker attach (name of container)
-#Generate a new SSH key (id_rsa.pub) to replace all the public key that was initially used while creating the 3 VMs.
-root@9ba994bbeca9:/# ssh-key
+  ```bash
+      # ssh to the jump box
+      $ ssh zeroAdmin@13.77.57.149
+      # install docker.io on your jump box
+      zeroAdmin@JumpBoxProvisioner:~$ sudo apt update
+      zeroAdmin@JumpBoxProvisioner:~$ sudo apt install docker.io
+      # Verify that the Docker service is running
+      zeroAdmin@JumpBoxProvisioner:~$ sudo systemctl status docker
+      # If the Docker service is not running, start it with:
+      zeroAdmin@JumpBoxProvisioner:~$ sudo systemctl start docker
+      # Once Docker is installed, pull the container `cyberxsecurity/ansible`.
+      zeroAdmin@JumpBoxProvisioner:~$ sudo docker pull cyberxsecurity/ansible
+      # Launch the Ansible container
+      zeroAdmin@JumpBoxProvisioner:~$ docker run -ti cyberxsecurity/ansible:latest bash
+      # Check for the installed container
+      zeroAdmin@JumpBoxProvisioner:~$ sudo docker container list -a
+      #run the following commands to start and attach the container
+      zeroAdmin@JumpBoxProvisioner:~$ sudo docker start (name of container)
+      zeroAdmin@JumpBoxProvisioner:~$ sudo docker ps
+      zeroAdmin@JumpBoxProvisioner:~$ sudo docker attach (name of container)
+  ```
+Generate a new SSH key (id_rsa.pub) to replace all the public key that was initially used while creating the 3 VMs.
+
+  ```bash
+      root@9ba994bbeca9:/# ssh-keygen
+      root@9ba994bbeca9:/# ls .ssh/
+      id_rsa  id_rsa.pub
+      root@9ba994bbeca9:/# cat .ssh/id_rsa.pub
+      ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDz5KX3urPPKbYRKS3J06wyw5Xj4eZRQTcg6u2LpnSsXwPWYBpCdF5lE3tJlbp7AsnXlXpq2G0oAy5dcLJX2anpfaEBTEvZ0mFBS24AdNnF3ptan5SmEM/
+  ```
+Go back to the Azure portal and `Reset the password` for the 3 DVWA VMs (Web 1, Web 2 and Web 3)
+Copy the key into the SSH public key box.
+
+This time go back to the terminal or Gitbash on your workstation and run these commands:
+
+  ```bash
+      # Locate the Ansible config file and hosts file
+      root@9ba994bbeca9:/# cd /etc/ansible
+      root@9ba994bbeca9/etc/ansible:/# nano /etc/ansible/hosts
+      # Unhash the [webserver] and add below it the IP addresses of the VMs and the location of the python script and then save.
+                10.0.0.5 ansible_python_interpreter=/usr/bin/python3
+      # Change the "remote_user = root" to "remote_user = zeroAdmin"
+      root@9ba994bbeca9/etc/ansible:/# nano ansible.cfg
 ssh username@Web-1IP
 exit
 ssh username@Web2-IP
