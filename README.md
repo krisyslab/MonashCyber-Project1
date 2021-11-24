@@ -86,15 +86,6 @@ the jump box VM will be used to connect to the network later on. Instead of usin
    To test if they are accessible: go to a web browser and type - http://20.190.121.162/setup.php
 
 
-
-Open terminal or gitbash, connect to the container by running sudo docker run -it cyberxsecurity/ansible /bin/bash. Generate a new SSH key (id_rsa.pub) to replace all the public key that was initially used while creating the 3 VMs. 
-Locate the Ansible config file and hosts file:  cd /etc/ansible. Run: nano /etc/ansible/hosts. unhash the [webserver] and add below it the IP addresses of the VMs and the location of the python script. example:
-10.0.0.5 ansible_python_interpreter=/usr/bin/python3 then run: nano ansible.cfg look for the "remote_user" and change to remote_user = zeroAdmin. Try to ping the VMs: ansible -m ping all. The output should have "SUCCESS" to all 3 VMs.
-
-Now deploy the configurations for the 3 VM servers using YAML. Create a YAML playbook file that will be used for the configurations. Run nano pentest.yml and edit it to add the configurations. after adding the configurations run the command ansible-playbook pentest.yml to deploy them to all the VMs. SSH to any of the VM servers to test. Run curl localhost/setup.php - it should output a DVWA html code which was included in the configuration for the next Cloud Security activity.
-
-
-
 ## Docker Container Setup for the **jump box**
 
 Running the commands below will configure the **jump box** to run Docker containers and to install a containers for the 3 DVWA VMs.
@@ -139,15 +130,15 @@ This time go back to the terminal or Gitbash on your workstation and run these c
       root@9ba994bbeca9:~# cd /etc/ansible
       root@9ba994bbeca9:/etc/ansible# nano /etc/ansible/hosts
       # Unhash the [webserver] and add below it the IP addresses of the VMs and the location of the python script and then save.
-              `[webserver]
-                10.0.0.5 ansible_python_interpreter=/usr/bin/python3
-                10.0.0.6 ansible_python_interpreter=/usr/bin/python3
-                10.0.0.7 ansible_python_interpreter=/usr/bin/python3`
+      `[webserver]
+      10.0.0.5 ansible_python_interpreter=/usr/bin/python3
+      10.0.0.6 ansible_python_interpreter=/usr/bin/python3
+      10.0.0.7 ansible_python_interpreter=/usr/bin/python3`
       # Change the Ansible configuration file to use your admin account for SSH connections.
       root@9ba994bbeca9:/etc/ansible# nano ansible.cfg
       # Scroll down to the `remote_user` option. 
       # Uncomment the `remote_user` line and replace `root` with your admin username as shown below:
-				      `remote_user = zeroAdmin (user-name-for-web-VMs)`
+			`remote_user = zeroAdmin (user-name-for-web-VMs)`
       # Test an Ansible connection using the appropriate Ansible command.
       root@9ba994bbeca9:/etc/ansible# ansible -m ping all
       10.0.0.6 | SUCCESS => {
@@ -163,6 +154,94 @@ This time go back to the terminal or Gitbash on your workstation and run these c
           "ping": "pong"
       }
   ```
+Now deploy the configurations for the 3 VM servers using YAML. Create a YAML playbook file that will be used for the configurations. Run `nano pentest.yml`
+
+  ```yaml
+---
+  - name: Config Web VM with Docker
+    hosts: webservers
+    become: true
+    tasks:
+    
+      - name: docker.io
+        apt:
+          update_cache: yes
+          name: docker.io
+          state: present
+
+      - name: Install pip3
+        apt:
+          name: python3-pip
+          state: present
+
+      - name: Install Docker python module
+        pip:
+          name: docker
+          state: present
+
+      - name: download and launch a docker web container
+        docker_container:
+          name: dvwa
+          image: cyberxsecurity/dvwa
+          state: started
+          restart_policy: always
+          published_ports: 80:80
+
+      - name: Enable docker service
+        systemd:
+          name: docker
+          enabled: yes
+```
+```bash
+      root@9ba994bbeca9:/etc/ansible# ansible-playbook pentest.yml
+      [WARNING]: ansible.utils.display.initialize_locale has not been called, this may result in incorrectly calculated
+      text widths that can cause Display to print incorrect line lengths
+
+PLAY [Config Web VM with Docker] *******************************************************************************************************
+TASK [Gathering Facts] *****************************************************************************************************************
+ok: [10.0.0.5]
+ok: [10.0.0.6]
+ok: [10.0.0.7]
+
+TASK [docker.io] ************************************************************************************************************************
+changed: [10.0.0.5]
+changed: [10.0.0.6]
+changed: [10.0.0.7]
+
+TASK [Install pip3] *********************************************************************************************************************
+changed: [10.0.0.6]
+changed: [10.0.0.7]
+changed: [10.0.0.5]
+
+TASK [Install Docker python module] *****************************************************************************************************
+changed: [10.0.0.5]
+changed: [10.0.0.6]
+changed: [10.0.0.7]
+  
+TASK [download and launch a docker web container] ***************************************************************************************
+[DEPRECATION WARNING]: The container_default_behavior option will change its default value from "compatibility" to "no_defaults" 
+in community.docker 2.0.0. To remove this warning, please specify an explicit value for it now. This feature will be removed from 
+community.docker in version 2.0.0. Deprecation warnings can be disabled by setting deprecation_warnings=False in ansible.cfg.
+changed: [10.0.0.5]
+changed: [10.0.0.6]
+changed: [10.0.0.7]
+
+TASK [Enable docker service] ***********************************************************************************************************
+changed: [10.0.0.6]
+changed: [10.0.0.5]
+changed: [10.0.0.7]
+
+PLAY RECAP *****************************************************************************************************************************
+10.0.0.5                   : ok=6    changed=6    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+10.0.0.6                   : ok=6    changed=6    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+10.0.0.7                   : ok=6    changed=6    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+```
+
+
+
+ and edit it to add the configurations. After adding the configurations run the command `ansible-playbook pentest.yml` to deploy them to all the VMs. SSH to any of the VM servers to test. `Run curl localhost/setup.php` - it should output a DVWA html code which was included in the configuration for the next Cloud Security activity.
+
+
 ssh username@Web-1IP
 exit
 ssh username@Web2-IP
@@ -225,7 +304,6 @@ The playbook is duplicated below.
 
 ```yaml
 ---
-  # install_elk.yml
   - name: Configure Elk VM with Docker
     hosts: elkservers
     remote_user: zeroAdmin
@@ -295,33 +373,27 @@ The playbook below installs Filebeat on the target hosts.
     hosts: webservers
     become: yes
     tasks:
-    # Use command module
+    
     - name: Download filebeat .deb file
       command: curl -L -O https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-7.4.0-amd64.deb
 
-    # Use command module
     - name: Install filebeat .deb
       command: dpkg -i filebeat-7.4.0-amd64.deb
 
-    # Use copy module
     - name: Drop in filebeat config
       copy:
         src: /etc/ansible/files/filebeat-config.yml
         dest: /etc/filebeat/filebeat.yml
 
-    # Use command module
     - name: Enable and Configure System Module
       command: filebeat modules enable system
 
-    # Use command module
     - name: Setup filebeat
       command: filebeat setup
 
-    # Use command module
     - name: Start filebeat service
       command: service filebeat start
 
-    # Use systemd module
     - name: Enable service filebeat on boot
       systemd:
         name: filebeat
@@ -336,29 +408,24 @@ The playbook below installs Metricbeat on the target hosts.
     hosts: webservers
     become: true
     tasks:
-    # Use command module
+  
     - name: Download metricbeat
       command: curl -L -O https://artifacts.elastic.co/downloads/beats/metricbeat/metricbeat-7.4.0-amd64.deb
 
-    # Use command module
     - name: install metricbeat
       command: dpkg -i metricbeat-7.4.0-amd64.deb
 
-    # Use copy module
     - name: drop in metricbeat config
       copy:
         src: /etc/ansible/files/metricbeat-config.yml
         dest: /etc/metricbeat/metricbeat.yml
 
-    # Use command module
     - name: enable and configure docker module for metric beat
       command: metricbeat modules enable docker
 
-    # Use command module
     - name: setup metric beat
       command: metricbeat setup
 
-    # Use command module
     - name: start metric beat
       command: service metricbeat start
 ```
