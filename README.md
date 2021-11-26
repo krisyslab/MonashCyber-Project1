@@ -14,7 +14,7 @@ This document contains the following details:
 ## Description of the Topology
 This repository includes code defining the infrastructure below. 
 
-![README Diagram.png](https://github.com/zenithus/ELK-Stack-Project/blob/ca272cf07f478a4658765454cc624cbbe3751bcd/Images/README%20Diagram.PNG)
+![README Diagram.png](https://github.com/krisyslab/ELK-Stack-Project/blob/6399ddeed4a590094b5d0297ef450ae39fd6693a/Images/README%20Diagram.PNG)
 
 The main purpose of this network is to expose a load-balanced and monitored instance of DVWA, the "D*mn Vulnerable Web Application"
 
@@ -281,8 +281,6 @@ The ELK VM exposes an Elastic Stack instance. **Docker** is used to download and
 Rather than configure ELK manually, we opted to develop a reusable Ansible Playbook to accomplish the task. This playbook is duplicated below.
 
 To use this playbook, one must log into the Jump Box, then issue: `ansible-playbook install_elk.yml`. This runs the `install_elk.yml` playbook on the `elk` host.
-
-## Elk Configuration
 
 Ansible was used to automate configuration of the ELK machine. No configuration was performed manually, which is advantageous because It can easily deploy multi-tier applications. 
 There is no need to configure applications on every machine, all the tasks are specified in the playbook. 
