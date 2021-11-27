@@ -195,6 +195,9 @@ Now deploy the configurations for the 3 VM servers using YAML. Create a YAML pla
 
 ```bash
 
+![pentest.png](https://github.com/krisyslab/ELK-Stack-Project/blob/6e5255228aaf69fd813a239aaabd950c7653fcae/Images/pentest.PNG)
+
+
 root@9ba994bbeca9:/etc/ansible# ansible-playbook pentest.yml
 [WARNING]: ansible.utils.display.initialize_locale has not been called, this may result in incorrectly calculated
 text widths that can cause Display to print incorrect line lengths
