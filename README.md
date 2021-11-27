@@ -556,7 +556,7 @@ Then, run: `curl http://10.1.0.4:5601/app/kibana`. This is the address of Kibana
 ELK works best when logs from various Apps of an enterprise converge into a single ELK instance. 
 It provides insights for instances and also eliminates the need to log into hundreds of different log data sources. 
 It has a rapid on-premise installation especially when using Ansible to automate configuration of the ELK machine.
-ELK stack is easy to deploy Scales vertically and horizontally.
+ELK stack is easy to deploy, scales vertically and horizontally.
 
 ### Disadvantages
 
