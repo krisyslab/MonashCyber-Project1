@@ -185,7 +185,7 @@ This time go back to the terminal or Gitbash on your workstation and run these c
           "ping": "pong"
       }
   ```
-Now deploy the configurations for the 3 VM servers using YAML. Create a YAML playbook file that will be used for the configurations. Run `touch pentest.yml`
+Now deploy the configurations for the 3 VM servers using YAML. Create a YAML playbook file that will be used for the configurations. Run `nano /etc/ansible/pentest.yml` and add the input below.
 
 ```yaml
 ---
@@ -193,23 +193,26 @@ Now deploy the configurations for the 3 VM servers using YAML. Create a YAML pla
     hosts: webservers
     become: true
     tasks:
-    
+    # update_cache: yes is needed to download and install docker.io
       - name: docker.io
         apt:
           update_cache: yes
           name: docker.io
           state: present
 
+    # Use the Ansible `pip` module to install `docker`
       - name: Install pip3
         apt:
           name: python3-pip
           state: present
 
+    # installing the Python Docker Module, so Ansible can then utilize that module to control docker containers
       - name: Install Docker python module
         pip:
           name: docker
           state: present
 
+    # Use the Ansible `docker-container` module to install the `cyberxsecurity/dvwa` container
       - name: download and launch a docker web container
         docker_container:
           name: dvwa
@@ -218,18 +221,16 @@ Now deploy the configurations for the 3 VM servers using YAML. Create a YAML pla
           restart_policy: always
           published_ports: 80:80
 
+    # restart_policy: always` will ensure that the container restarts if you restart your web vm
       - name: Enable docker service
         systemd:
           name: docker
           enabled: yes
 ```
-
-![pentest.png](https://github.com/krisyslab/ELK-Stack-Project/blob/6e5255228aaf69fd813a239aaabd950c7653fcae/Images/pentest.PNG)
+After saving the configurations run the command `ansible-playbook pentest.yml` to deploy them to all the VMs. 
+You should be able to produce the same output as below when you run the playbook:
 
 ```bash
-
-
-
 
 root@9ba994bbeca9:/etc/ansible# ansible-playbook pentest.yml
 [WARNING]: ansible.utils.display.initialize_locale has not been called, this may result in incorrectly calculated
@@ -276,10 +277,12 @@ PLAY RECAP *********************************************************************
 10.0.0.7                   : ok=6    changed=6    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
 
 ```
+SSH to any of the VM servers to test. 
+![allow http to VM.png](https://github.com/krisyslab/ELK-Stack-Project/blob/9e7db42bb2a5d4149a555409b86a05db2666f141/Images/allow%20http%20to%20VM.PNG)
 
+Run `curl localhost/setup.php` - it should output a DVWA html code which was included in the configuration for the next Cloud Security activity.
+![allow http to VM.png](https://github.com/krisyslab/ELK-Stack-Project/blob/9e7db42bb2a5d4149a555409b86a05db2666f141/Images/allow%20http%20to%20VM.PNG)
 
-
- and edit it to add the configurations. After adding the configurations run the command `ansible-playbook pentest.yml` to deploy them to all the VMs. SSH to any of the VM servers to test. `Run curl localhost/setup.php` - it should output a DVWA html code which was included in the configuration for the next Cloud Security activity.
 
 8. Create a new security rule in network security group to allow port 80 traffic from the IP address of the workstation into the VirtualNetwork via the Public IP address of the Load Balancer. 
 
