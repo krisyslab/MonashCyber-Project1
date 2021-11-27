@@ -138,7 +138,7 @@ Running the commands below will configure the **jump box** to run Docker contain
       zeroAdmin@JumpBoxProvisioner:~$ sudo docker ps
       zeroAdmin@JumpBoxProvisioner:~$ sudo docker attach (name of container)
   ```
-![docker container list.png](https://github.com/krisyslab/ELK-Stack-Project/blob/0f2d5d755274c6f9e81292fb9eff9c0807b3bc1d/Images/load%20balancing%20rule.PNG)
+![docker container list.png](https://github.com/krisyslab/ELK-Stack-Project/blob/8c9b83d2f0b51527d6f9cbbfe77b817bfd94bcf7/Images/docker%20container%20list.PNG)
 
 To reset your SSH key, you can do so in the VM details page by selecting 'Reset Password' on the left had column.
 Generate a new SSH key (id_rsa.pub) from the JumpBoxProvisioner to replace all the public key that was initially used while creating the 3 VMs.
@@ -153,7 +153,7 @@ Generate a new SSH key (id_rsa.pub) from the JumpBoxProvisioner to replace all t
   ```
 Go back to the Azure portal and `Reset the password` for the 3 DVWA VMs (Web 1, Web 2 and Web 3)
 
-![reset VM password.png](https://github.com/krisyslab/ELK-Stack-Project/blob/0f2d5d755274c6f9e81292fb9eff9c0807b3bc1d/Images/load%20balancing%20rule.PNG)   
+![reset VM password.png](https://github.com/krisyslab/ELK-Stack-Project/blob/8c9b83d2f0b51527d6f9cbbfe77b817bfd94bcf7/Images/reset%20VM%20password.PNG)   
 
 This time go back to the terminal or Gitbash on your workstation and run these commands:
 
