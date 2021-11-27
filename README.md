@@ -38,6 +38,7 @@ The configuration details of each machine may be found below.
 In the above table, we have provisioned a **load balancer** in front of all three DVWA machines. The load balancer's targets are organized into the following availability zones:
 - **Availability Zone 1**: Web 1(DVWA) to Web 3(DVWA)  
 - **Availability Zone 2**: ELK server
+
 The Jump box will not be placed in either of the Availability zones. 
 
 ## Setting up the Azure Cloud Network
