@@ -21,9 +21,9 @@ The main purpose of this network is to expose and observe a load-balanced and mo
 Load balancing ensures that the application will be highly **available**, in addition to restricting **inbound access** to the network. The load balancer ensures that the processing of incoming traffic will be shared by the three vulnerable web servers. Access controls will ensure that only authorized users will be able to connect to the servers.
 
 Integrating an ELK server allows users to easily monitor the vulnerable VMs.
-Our focus is to monitor for changes to the:
-**- File systems of the VMs on the network**,  
-**- System metrics such as CPU usage; attempted SSH logins and `sudo` escalation failures**
+Our focus is to monitor for changes to the following:
+    **- File systems of the VMs on the network**,  
+    **- System metrics such as CPU usage; attempted SSH logins and `sudo` escalation failures**
 
 The configuration details of each machine may be found below.
 
