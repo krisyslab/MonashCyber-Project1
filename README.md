@@ -22,9 +22,9 @@ Load balancing ensures that the application will be highly **available**, in add
 
 Integrating an ELK server allows users to easily monitor the vulnerable VMs.
 Our focus is to monitor for changes to the following:
-    **- File systems of the VMs on the network**,  
-    **- System metrics such as CPU usage; attempted SSH logins and `sudo` escalation failures**
-
+- **File systems of the VMs on the network**,  
+- **System metrics such as CPU usage; attempted SSH logins and `sudo` escalation failures**
+  
 The configuration details of each machine may be found below.
 
 | Name         | Function    | IP Address | Operating System | Specifications                                                   | Container                      |
@@ -39,7 +39,6 @@ In the above table, we have provisioned a **load balancer** in front of all thre
 - **Availability Zone 1**: Web 1(DVWA) to Web 3(DVWA)  
 - **Availability Zone 2**: ELK server
 The Jump box will not be placed in either of the Availability zones. 
-
 
 ## Setting up the Azure Cloud Network
 
