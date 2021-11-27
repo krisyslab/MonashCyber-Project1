@@ -199,41 +199,42 @@ root@9ba994bbeca9:/etc/ansible# ansible-playbook pentest.yml
 [WARNING]: ansible.utils.display.initialize_locale has not been called, this may result in incorrectly calculated
 text widths that can cause Display to print incorrect line lengths
 
-PLAY [Config Web VM with Docker] ****************************************************************************************************
-TASK [Gathering Facts] **************************************************************************************************************
+PLAY [Config Web VM with Docker] ***********************************************************************************
+TASK [Gathering Facts] *********************************************************************************************
 ok: [10.0.0.5]
 ok: [10.0.0.6]
 ok: [10.0.0.7]
 
-TASK [docker.io] ********************************************************************************************************************
+TASK [docker.io] ***************************************************************************************************
 changed: [10.0.0.5]
 changed: [10.0.0.6]
 changed: [10.0.0.7]
 
-TASK [Install pip3] *****************************************************************************************************************
+TASK [Install pip3] ************************************************************************************************
 changed: [10.0.0.6]
 changed: [10.0.0.7]
 changed: [10.0.0.5]
 
-TASK [Install Docker python module] *************************************************************************************************
+TASK [Install Docker python module] ********************************************************************************
 changed: [10.0.0.5]
 changed: [10.0.0.6]
 changed: [10.0.0.7]
   
-TASK [download and launch a docker web container] ***********************************************************************************
-[DEPRECATION WARNING]: The container_default_behavior option will change its default value from "compatibility" to "no_defaults" 
-in community.docker 2.0.0. To remove this warning, please specify an explicit value for it now. This feature will be removed from 
-community.docker in version 2.0.0. Deprecation warnings can be disabled by setting deprecation_warnings=False in ansible.cfg.
+TASK [download and launch a docker web container] ******************************************************************
+[DEPRECATION WARNING]: The container_default_behavior option will change its default value from "compatibility"
+to "no_defaults" in community.docker 2.0.0. To remove this warning, please specify an explicit value for it now. 
+This feature will be removed from community.docker in version 2.0.0. Deprecation warnings can be disabled by 
+setting deprecation_warnings=False in ansible.cfg.
 changed: [10.0.0.5]
 changed: [10.0.0.6]
 changed: [10.0.0.7]
 
-TASK [Enable docker service] *******************************************************************************************************
+TASK [Enable docker service] ***************************************************************************************
 changed: [10.0.0.6]
 changed: [10.0.0.5]
 changed: [10.0.0.7]
 
-PLAY RECAP *************************************************************************************************************************
+PLAY RECAP *********************************************************************************************************
 10.0.0.5                   : ok=6    changed=6    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
 10.0.0.6                   : ok=6    changed=6    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
 10.0.0.7                   : ok=6    changed=6    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
