@@ -131,7 +131,7 @@ Running the commands below will configure the **jump box** to run Docker contain
       # Launch the Ansible container
       zeroAdmin@JumpBoxProvisioner:~$ docker run -ti cyberxsecurity/ansible:latest bash
 
-      # Check for the installed container. rememebr the container name so that you know which to which one you have installed the container setup.
+      # Check for the installed container. Remember the container name so that you know which to which one you have installed the container setup.
       zeroAdmin@JumpBoxProvisioner:~$ sudo docker container list -a
       #run the following commands to start and attach the container
       zeroAdmin@JumpBoxProvisioner:~$ sudo docker start (name of container)
