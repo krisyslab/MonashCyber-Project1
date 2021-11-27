@@ -538,11 +538,15 @@ To verify success, wait five minutes to give ELK time to start up.
 
 Then, run: `curl http://10.1.0.4:5601/app/kibana`. This is the address of Kibana. If the installation succeeded, this command should print HTML to the console.
 
-![curl command to kibana.png](https://github.com/krisyslab/ELK-Stack-Project/blob/d9d5d5e14f02378489796eba80aac0552e2160b3/Images/curl%20command%20to%20kibana.PNG)
+![curl command to kibana.png](https://github.com/krisyslab/ELK-Stack-Project/blob/79d5a42e1460d34f363d2735cc3d3672a96f566b/Images/curl%20command%20to%20kibana.PNG)
 
-![curl command to kibana.png](https://github.com/krisyslab/ELK-Stack-Project/blob/d9d5d5e14f02378489796eba80aac0552e2160b3/Images/curl%20command%20to%20kibana.PNG)
+![data stream.png](https://github.com/krisyslab/ELK-Stack-Project/blob/79d5a42e1460d34f363d2735cc3d3672a96f566b/Images/data%20stream.PNG)
 
-![curl command to kibana.png](https://github.com/krisyslab/ELK-Stack-Project/blob/d9d5d5e14f02378489796eba80aac0552e2160b3/Images/curl%20command%20to%20kibana.PNG)
+![file beat log.png](https://github.com/krisyslab/ELK-Stack-Project/blob/79d5a42e1460d34f363d2735cc3d3672a96f566b/Images/file%20beat%20log.PNG)
+
+![metric.png](https://github.com/krisyslab/ELK-Stack-Project/blob/79d5a42e1460d34f363d2735cc3d3672a96f566b/Images/metric.PNG)
+
+![sample kibana.png](https://github.com/krisyslab/ELK-Stack-Project/blob/79d5a42e1460d34f363d2735cc3d3672a96f566b/Images/sample%20kibana.PNG)
 ## Advantages and Disadvantages of ELK stack
 
 ### Advantages
