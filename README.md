@@ -114,35 +114,46 @@ Running the commands below will configure the **jump box** to run Docker contain
   ```bash
       # ssh to the jump box
       $ ssh zeroAdmin@13.77.57.149
+
       # install docker.io on your jump box
       zeroAdmin@JumpBoxProvisioner:~$ sudo apt update
       zeroAdmin@JumpBoxProvisioner:~$ sudo apt install docker.io
+
       # Verify that the Docker service is running
       zeroAdmin@JumpBoxProvisioner:~$ sudo systemctl status docker
+
       # If the Docker service is not running, start it with:
       zeroAdmin@JumpBoxProvisioner:~$ sudo systemctl start docker
+
       # Once Docker is installed, pull the container `cyberxsecurity/ansible`.
       zeroAdmin@JumpBoxProvisioner:~$ sudo docker pull cyberxsecurity/ansible
+
       # Launch the Ansible container
       zeroAdmin@JumpBoxProvisioner:~$ docker run -ti cyberxsecurity/ansible:latest bash
-      # Check for the installed container
+
+      # Check for the installed container. rememebr the container name so that you know which to which one you have installed the container setup.
       zeroAdmin@JumpBoxProvisioner:~$ sudo docker container list -a
       #run the following commands to start and attach the container
       zeroAdmin@JumpBoxProvisioner:~$ sudo docker start (name of container)
       zeroAdmin@JumpBoxProvisioner:~$ sudo docker ps
       zeroAdmin@JumpBoxProvisioner:~$ sudo docker attach (name of container)
   ```
-Generate a new SSH key (id_rsa.pub) to replace all the public key that was initially used while creating the 3 VMs.
+![docker container list.png](https://github.com/krisyslab/ELK-Stack-Project/blob/0f2d5d755274c6f9e81292fb9eff9c0807b3bc1d/Images/load%20balancing%20rule.PNG)
+
+To reset your SSH key, you can do so in the VM details page by selecting 'Reset Password' on the left had column.
+Generate a new SSH key (id_rsa.pub) from the JumpBoxProvisioner to replace all the public key that was initially used while creating the 3 VMs.
 
   ```bash
       root@9ba994bbeca9:~# ssh-keygen
+      Generating public/private rsa key pair..........
       root@9ba994bbeca9:~# ls .ssh/
       id_rsa  id_rsa.pub
       root@9ba994bbeca9:~# cat .ssh/id_rsa.pub
-      ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDz5KX3urPPKbYRKS3J06wyw5Xj4eZRQTcg6u2LpnSsXwPWYBpCdF5lE3tJlbp7AsnXlXpq2G0oAy5dcLJX2anpfaEBTEvZ0mFBS24AdNnF3ptan5SmEM/
+      ssh-rsa ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDFg2PWQQ2hK+6lC+kdn5Lp+0H0FtSZfMtcv5d5IDtSw0rVP//66aoli2EUzi83P9oh2HCcTA4JdJOwy2yE1sJboi9XeuRsYDnUCpyqdIe8UnzwJEp1COHsFZBUcLEQ0XtN7Qv4tN8FHWU02P........
   ```
 Go back to the Azure portal and `Reset the password` for the 3 DVWA VMs (Web 1, Web 2 and Web 3)
-Copy the key into the SSH public key box.
+
+![reset VM password.png](https://github.com/krisyslab/ELK-Stack-Project/blob/0f2d5d755274c6f9e81292fb9eff9c0807b3bc1d/Images/load%20balancing%20rule.PNG)   
 
 This time go back to the terminal or Gitbash on your workstation and run these commands:
 
@@ -150,6 +161,7 @@ This time go back to the terminal or Gitbash on your workstation and run these c
       # Locate the Ansible config file and hosts file
       root@9ba994bbeca9:~# cd /etc/ansible
       root@9ba994bbeca9:/etc/ansible# nano /etc/ansible/hosts
+
       # Unhash the [webserver] and add below it the IP addresses of the VMs and the location of the python script and then save.
       `[webserver]
       10.0.0.5 ansible_python_interpreter=/usr/bin/python3
@@ -159,7 +171,7 @@ This time go back to the terminal or Gitbash on your workstation and run these c
       root@9ba994bbeca9:/etc/ansible# nano ansible.cfg
       # Scroll down to the `remote_user` option. 
       # Uncomment the `remote_user` line and replace `root` with your admin username as shown below:
-      `remote_user = zeroAdmin (user-name-for-web-VMs)`
+      for example `remote_user = zeroAdmin`
       # Test an Ansible connection using the appropriate Ansible command.
       root@9ba994bbeca9:/etc/ansible# ansible -m ping all
       10.0.0.6 | SUCCESS => {
@@ -175,7 +187,7 @@ This time go back to the terminal or Gitbash on your workstation and run these c
           "ping": "pong"
       }
   ```
-Now deploy the configurations for the 3 VM servers using YAML. Create a YAML playbook file that will be used for the configurations. Run `nano pentest.yml`
+Now deploy the configurations for the 3 VM servers using YAML. Create a YAML playbook file that will be used for the configurations. Run `touch pentest.yml`
 
 ```yaml
 ---
