@@ -9,6 +9,8 @@ This document contains the following details:
 - Beats in Use
 - Machines Being Monitored
 - Usage instructions
+- Advantages and Disadvantages of ELK stack
+- Summary
 
 
 ## Description of the Topology
@@ -481,9 +483,9 @@ The playbook below installs Metricbeat on the target hosts.
 
 The ELK Stack is a collection of three open-source products —  `Elasticsearch `,  `Logstash `, and  `Kibana `. ELK stack provides centralized logging in order to identify problems with servers or applications. It allows you to search all the logs in a single place. It also helps to find issues in multiple servers by connecting logs during a specific time frame.
 
-E stands for ElasticSearch: used for storing logs
-L stands for LogStash : used for both shipping as well as processing and storing logs
-K stands for Kibana: is a visualization tool (a web interface) which is hosted through Nginx or Apache
+`E` stands for ElasticSearch: used for storing logs
+`L` stands for LogStash : used for both shipping as well as processing and storing logs
+`K` stands for Kibana: is a visualization tool (a web interface) which is hosted through Nginx or Apache
 ElasticSearch, LogStash and Kibana are all developed, managed ,and maintained by the company named Elastic.
 
 ELK Stack is designed to allow users to take data from any source, in any format, and to search, analyze, and visualize that data in real time.
@@ -538,9 +540,12 @@ Then, run: `curl http://10.1.0.4:5601/app/kibana`. This is the address of Kibana
 
 ![curl command to kibana.png](https://github.com/krisyslab/ELK-Stack-Project/blob/d9d5d5e14f02378489796eba80aac0552e2160b3/Images/curl%20command%20to%20kibana.PNG)
 
+![curl command to kibana.png](https://github.com/krisyslab/ELK-Stack-Project/blob/d9d5d5e14f02378489796eba80aac0552e2160b3/Images/curl%20command%20to%20kibana.PNG)
+
+![curl command to kibana.png](https://github.com/krisyslab/ELK-Stack-Project/blob/d9d5d5e14f02378489796eba80aac0552e2160b3/Images/curl%20command%20to%20kibana.PNG)
 ## Advantages and Disadvantages of ELK stack
 
-# Advantages
+### Advantages
 
 ELK works best when logs from various Apps of an enterprise converge into a single ELK instance
 It provides amazing insights for this single instance and also eliminates the need to log into hundred different log data sources
@@ -549,17 +554,17 @@ Easy to deploy Scales vertically and horizontally
 Elastic offers a host of language clients which includes Ruby. Python. PHP, Perl, .NET, Java, and JavaScript, and more
 Availability of libraries for different programming and scripting languages
 
-# Disadvantages
+### Disadvantages
 
 Different components In the stack can become difficult to handle when you move on to complex setup
 There’s nothing like trial and error. Thus, the more you do, the more you learn along the way
 
-# Summary
+### Summary
 
-Centralized logging can be useful when attempting to identify problems with servers or applications
-ELK server stack is useful to resolve issues related to centralized logging system
-ELK stack is a collection of three open source tools Elasticsearch, Logstash Kibana
-Elasticsearch is a NoSQL database
-Logstash is the data collection pipeline tool
-Kibana is a data visualization which completes the ELK stack
-In cloud-based environment infrastructures, performance and isolation is very important
+- Centralized logging can be useful when attempting to identify problems with servers or applications
+- ELK server stack is useful to resolve issues related to centralized logging system
+- ELK stack is a collection of three open source tools Elasticsearch, Logstash Kibana
+- Elasticsearch is a NoSQL database
+- Logstash is the data collection pipeline tool
+- Kibana is a data visualization which completes the ELK stack
+- In cloud-based environment infrastructures, performance and isolation is very important.
