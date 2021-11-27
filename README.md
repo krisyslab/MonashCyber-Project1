@@ -278,10 +278,10 @@ PLAY RECAP *********************************************************************
 
 ```
 SSH to any of the VM servers to test. 
-![allow http to VM.png](https://github.com/krisyslab/ELK-Stack-Project/blob/9e7db42bb2a5d4149a555409b86a05db2666f141/Images/allow%20http%20to%20VM.PNG)
+![ssh to VM.png](https://github.com/krisyslab/ELK-Stack-Project/blob/63c901f38fe97cde9cd596e0eede6c75fb22d098/Images/ssh%20to%20VM.PNG)
 
 Run `curl localhost/setup.php` - it should output a DVWA html code which was included in the configuration for the next Cloud Security activity.
-![allow http to VM.png](https://github.com/krisyslab/ELK-Stack-Project/blob/9e7db42bb2a5d4149a555409b86a05db2666f141/Images/allow%20http%20to%20VM.PNG)
+![curl command on VM.png](https://github.com/krisyslab/ELK-Stack-Project/blob/63c901f38fe97cde9cd596e0eede6c75fb22d098/Images/curl%20command%20on%20VM.PNG)
 
 
 8. Create a new security rule in network security group to allow port 80 traffic from the IP address of the workstation into the VirtualNetwork via the Public IP address of the Load Balancer. 
