@@ -4,11 +4,10 @@ This document contains the following details:
 - Description of the Topology
 - Access Policies 
 - Setting up the Azure Cloud Network
-- Docker Container Setup for the **jump box**
+- Docker Container Setup for the jump box
 - ELK Configuration
-- Beats in Use
-- Machines Being Monitored
-- Usage instructions
+- Target Machines and Beats
+- Usage Instructions
 - Advantages and Disadvantages of ELK stack
 - Summary
 
@@ -325,7 +324,7 @@ Verify that you can reach the DVWA app from your browser over the internet.
 ![DVWA website.png](https://github.com/krisyslab/ELK-Stack-Project/blob/0f2d5d755274c6f9e81292fb9eff9c0807b3bc1d/Images/DVWA%20website.PNG)
 
 
-## ELK Server Configuration
+## ELK Configuration
 
 The ELK VM exposes an Elastic Stack instance. **Docker** is used to download and manage an ELK container.
 
