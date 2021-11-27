@@ -50,13 +50,13 @@ The Jump box will not be placed in either of the Availability zones.
 2. Create the `Virtual Network`.
 Virtual Networks in Azure are similar to a traditional network that you'd operate in your own data center, but brings with it additional benefits such as scale, availability, and isolation.The Virtual machines (VMs) are placed inside the virtual network. This is also where to define the network and subnet.
 
-![create a virtual network.png](https://github.com/krisyslab/ELK-Stack-Project/blob/cc03eb55c19f4d189f28f743359aaae475a356ac/Images/create%20a%20virtual%20network.PNG)
+![create a virtual network.png](https://github.com/krisyslab/ELK-Stack-Project/blob/9e7db42bb2a5d4149a555409b86a05db2666f141/Images/create%20a%20virtual%20network.PNG)
 
 3. Set up the `Network Security Group(NSG)`. Like the Virtual Network the NSG belongs to the Resource Group you created in step 1. This network security group will be selected when choosing the security group for the VMs of the newly created virtual network. The network security group rules must be configured before creating the VMs.
 
    Create an inbound rule of `Deny All` denying all inbound traffic and give it a high number e.g 4096 -- This rule will always be the last rule, so it should have the highest possible number for the priority. You should now have a VNet protected by a network security group that blocks all inbound traffic.
 
-![deny all.png](https://github.com/krisyslab/ELK-Stack-Project/blob/cc03eb55c19f4d189f28f743359aaae475a356ac/Images/deny%20all.PNG)
+![deny all.png](https://github.com/krisyslab/ELK-Stack-Project/blob/9e7db42bb2a5d4149a555409b86a05db2666f141/Images/deny%20all.PNG)
 
 Before you create the first Virtual Machine(VM), You first have to establish a secure way of accessing the VMs. Instead of using a password to connect to the VM, you create a secure connection through `SSH`. Open terminal or Gitbash on your workstation. 
 
@@ -78,11 +78,11 @@ Before you create the first Virtual Machine(VM), You first have to establish a s
 
 4. Create the `jump box VM`, your first virtual machines inside your cloud network, which is protected by your network security group. You will use this machine as a jump box to access your cloud network and any other machines inside your VNet. Give the jump box VM a `static Public IP address`.
 
-![create JumpBox.png](https://github.com/krisyslab/ELK-Stack-Project/blob/cc03eb55c19f4d189f28f743359aaae475a356ac/Images/create%20JumpBox.PNG)
+![create JumpBox.png](https://github.com/krisyslab/ELK-Stack-Project/blob/9e7db42bb2a5d4149a555409b86a05db2666f141/Images/create%20JumpBox.PNG)
 
 5. Create a new rule in the network security group to allow SSH into the jump box from the IP address of the workstation. Give a low number e.g 100 to ensure a higher priority. Check the IP address of your workstation - type `whatismyip` in google to see the IPV4. 
 
-![allow ssh to jump box.png](https://github.com/krisyslab/ELK-Stack-Project/blob/cc03eb55c19f4d189f28f743359aaae475a356ac/Images/allow%20ssh%20to%20jump%20box.PNG)
+![allow ssh to jump box.png](https://github.com/krisyslab/ELK-Stack-Project/blob/9e7db42bb2a5d4149a555409b86a05db2666f141/Images/allow%20ssh%20to%20jump%20box.PNG)
 
 6. Create the three VMs: Web-1, Web-2 and Web-3. In setting up each individual VM:
   - Set up the subnet as default and without public IP
@@ -90,11 +90,11 @@ Before you create the first Virtual Machine(VM), You first have to establish a s
   - Select the security group - the same security group selected for the jump box. 
   - In the Availability Options click create a new `Availability Set` name your availability set. All VMs should belong to the same Availability set if they are to be placed inside the same Load Balancer Backend Pool. 
 
-![create VM.png](https://github.com/krisyslab/ELK-Stack-Project/blob/cc03eb55c19f4d189f28f743359aaae475a356ac/Images/create%20VM.PNG)
+![create VM.png](https://github.com/krisyslab/ELK-Stack-Project/blob/9e7db42bb2a5d4149a555409b86a05db2666f141/Images/create%20VM.PNG)
 
    Create a new rule allowing SSH into the VMs with source IP 10.0.0.4 (jump box VM) and destination: VirtualNetwork.
 
-![allow ssh from JumpBox.png](https://github.com/krisyslab/ELK-Stack-Project/blob/cc03eb55c19f4d189f28f743359aaae475a356ac/Images/allow%20ssh%20from%20JumpBox.PNG)
+![allow ssh from JumpBox.png](https://github.com/krisyslab/ELK-Stack-Project/blob/9e7db42bb2a5d4149a555409b86a05db2666f141/Images/allow%20ssh%20from%20JumpBox.PNG)
 
 7. Create the `Load balancer` and give it a `static Public IP address`. Create a `Health Probe`. Create a `Backend Pool` (Load Balancer Backend Pool) and add the 3 VMs (Web 1, Web 2, Web 3) in the backend pool.
 ![load balancer.png](https://github.com/krisyslab/ELK-Stack-Project/blob/cc03eb55c19f4d189f28f743359aaae475a356ac/Images/load%20balancer.PNG)
@@ -102,7 +102,7 @@ Before you create the first Virtual Machine(VM), You first have to establish a s
 ![Health Probe.png](https://github.com/krisyslab/ELK-Stack-Project/blob/cc03eb55c19f4d189f28f743359aaae475a356ac/Images/Health%20Probe.PNG)
    Add a Load Balance rule that will forward port 80 traffic from the load balancer to the VirtualNetwork. A load balancing rule distributes incoming traffic that is sent to a selected IP address and port combination across a group of backend pool instances. Only backend instances that the health probe considers healthy receive new traffic.
 
-![load balancing rule.png](https://github.com/krisyslab/ELK-Stack-Project/blob/cc03eb55c19f4d189f28f743359aaae475a356ac/Images/load%20balancing%20rule.PNG)   
+![load balancing rule.png](https://github.com/krisyslab/ELK-Stack-Project/blob/9e7db42bb2a5d4149a555409b86a05db2666f141/Images/load%20balancing%20rule.PNG)   
 
 
 ## Docker Container Setup for the **jump box**
@@ -283,7 +283,7 @@ PLAY RECAP *********************************************************************
 
 8. Create a new security rule in network security group to allow port 80 traffic from the IP address of the workstation into the VirtualNetwork via the Public IP address of the Load Balancer. 
 
-![allow http to VM.png](https://github.com/krisyslab/ELK-Stack-Project/blob/9bac49833edc8a1ea2e0b7f70c1e793c9d0ba407/Images/allow%20http%20to%20VM.PNG)
+![allow http to VM.png](https://github.com/krisyslab/ELK-Stack-Project/blob/9e7db42bb2a5d4149a555409b86a05db2666f141/Images/allow%20http%20to%20VM.PNG)
 
    Remove the "Deny All" rule that was set up earlier in step 3. Just remember that with the stated configuration, you will not be able to access these machines from another location unless the security Group rule is changed.
 
