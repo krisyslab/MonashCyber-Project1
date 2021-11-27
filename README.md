@@ -277,31 +277,26 @@ PLAY RECAP *********************************************************************
 10.0.0.7                   : ok=6    changed=6    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
 
 ```
+Now try to ping all VM using the command `ansible -m ping all`
+![ping all VM.png](https://github.com/krisyslab/ELK-Stack-Project/blob/9bac49833edc8a1ea2e0b7f70c1e793c9d0ba407/Images/reset%20VM%20password.PNG) 
 SSH to any of the VM servers to test. 
 ![ssh to VM.png](https://github.com/krisyslab/ELK-Stack-Project/blob/63c901f38fe97cde9cd596e0eede6c75fb22d098/Images/ssh%20to%20VM.PNG)
 
 Run `curl localhost/setup.php` - it should output a DVWA html code which was included in the configuration for the next Cloud Security activity.
 ![curl command on VM.png](https://github.com/krisyslab/ELK-Stack-Project/blob/63c901f38fe97cde9cd596e0eede6c75fb22d098/Images/curl%20command%20on%20VM.PNG)
 
-
-8. Create a new security rule in network security group to allow port 80 traffic from the IP address of the workstation into the VirtualNetwork via the Public IP address of the Load Balancer. 
+Now go back to your Azure portal and create a new security rule in the network security group to allow port 80 traffic from the IP address of the workstation into the VirtualNetwork via the Public IP address of the Load Balancer. 
 
 ![allow http to VM.png](https://github.com/krisyslab/ELK-Stack-Project/blob/9e7db42bb2a5d4149a555409b86a05db2666f141/Images/allow%20http%20to%20VM.PNG)
 
-   Remove the "Deny All" rule that was set up earlier in step 3. Just remember that with the stated configuration, you will not be able to access these machines from another location unless the security Group rule is changed.
+Remove the "Deny All" rule that was set up earlier in step 3. Just remember that with the stated configuration, you will not be able to access these machines from another location unless the security Group rule is changed.
 
-   Verify that you can reach the DVWA app from your browser over the internet.
+Verify that you can reach the DVWA app from your browser over the internet.
 
     - Open a web browser and enter the front-end IP address for your load balancer with `/setup.php` added to the IP address. In this example: http://20.190.121.162/setup.php
 
 ![DVWA website.png](https://github.com/krisyslab/ELK-Stack-Project/blob/0f2d5d755274c6f9e81292fb9eff9c0807b3bc1d/Images/DVWA%20website.PNG)
 
-ssh username@Web-1IP
-exit
-ssh username@Web2-IP
-exit
-**now ping again**
-ansible all -m ping
 
 ## Access Policies
 
