@@ -278,7 +278,7 @@ PLAY RECAP *********************************************************************
 
 ```
 Now try to ping all VM using the command `ansible -m ping all`
-![ping all VM.png](https://github.com/krisyslab/ELK-Stack-Project/blob/9bac49833edc8a1ea2e0b7f70c1e793c9d0ba407/Images/reset%20VM%20password.PNG) 
+![ping all VM.png](https://github.com/krisyslab/ELK-Stack-Project/blob/aa71628c8ce68606e8650ea7475fe24cd4929efe/Images/ping%20all%20VM.PNG) 
 SSH to any of the VM servers to test. 
 ![ssh to VM.png](https://github.com/krisyslab/ELK-Stack-Project/blob/63c901f38fe97cde9cd596e0eede6c75fb22d098/Images/ssh%20to%20VM.PNG)
 
